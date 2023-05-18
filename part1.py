@@ -29,7 +29,9 @@ def Smoothing(data):
     for i in range(0,len(data)):
         
         sample = 0
-        for j in range(0,31+1):
+        for j in range(1,31+1):
+            if (i - (31-j)) < 0:
+                continue
             sample+=data[i - (31-j)]
             
         temp.append(sample*(1/31))
@@ -46,32 +48,16 @@ def AutoCorr(signal):
     for i in range(0,len(signal)):
         
         sample = 0
-        for j in range(1, len(signal)):
+        for j in range(i, len(signal)):
             
-            sample += signal[i] * signal[i-j]
+            sample += signal[j] * signal[j-i]
             
     
         temp.append(sample)
 
     return temp
 
-#most probably the right one
-def AutoCorr1(signal, lag):
 
-    n = len(signal)
-    temp = []
-
-    for m in range(lag):
-
-        sample = 0
-        for i in range(m, n):
-
-            sample += signal[i] * signal[i-m]
-
-        sample /= n
-        temp.append(sample)
-
-    return temp
 
 
 #MAIN
@@ -125,7 +111,7 @@ sampling_rate = 512
 peaks , _ = find_peaks(signal_auto)
 
 
-firstPeak = peaks[0]
+firstPeak = peaks[2]
 
 time = firstPeak / sampling_rate
 heart_rate = 60 / time  
