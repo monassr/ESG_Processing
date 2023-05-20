@@ -57,7 +57,9 @@ def AutoCorr(signal):
 
     return temp
 
-
+def autocorr(x):
+    result = np.correlate(x, x, mode='full')
+    return result[int(result.size/2):]
 
 
 #MAIN
@@ -110,12 +112,15 @@ sampling_rate = 512
 
 peaks , _ = find_peaks(signal_auto)
 
+firstpeak = peaks[0]
 
-firstPeak = peaks[2]
+while signal_auto[firstpeak] < 0.0001:
+    firstpeak = peaks[1:]
+    firstpeak = firstpeak[0]
 
-time = firstPeak / sampling_rate
+time = firstpeak / sampling_rate
 heart_rate = 60 / time  
 
-print("happens at ", firstPeak)
+print("happens at ", firstpeak)
 print("time is ", time)
 print(f"The heart rate is {heart_rate} beats per minute.")
