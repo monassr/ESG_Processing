@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
 import numpy as np
 from scipy.signal import find_peaks
+from scipy.stats import entropy
+
+
 
 
 def FivePointDiff(signal):
@@ -78,22 +81,22 @@ signal_sq = Squaring(signal_diff)
 signal_smooth = Smoothing(signal_sq)
 signal_auto = AutoCorr(signal_smooth)
 
-_,plot = plt.subplots(figsize=(12, 6))
-plot.plot(signal)
-plot.set_title('Original Data')
-plt.show()
+# _,plot = plt.subplots(figsize=(12, 6))
+# plot.plot(signal)
+# plot.set_title('Original Data')
+# plt.show()
 
 
-_,plot = plt.subplots(figsize=(12, 6))
-plot.plot(signal_diff)
-plot.set_title('After Differentiation')
-plt.show()
+# _,plot = plt.subplots(figsize=(12, 6))
+# plot.plot(signal_diff)
+# plot.set_title('After Differentiation')
+# plt.show()
 
 
-_,plot = plt.subplots(figsize=(12, 6))
-plot.plot(signal_sq)
-plot.set_title('After Squaring')
-plt.show()
+# _,plot = plt.subplots(figsize=(12, 6))
+# plot.plot(signal_sq)
+# plot.set_title('After Squaring')
+# plt.show()
 
 
 _,plot = plt.subplots(figsize=(12, 6))
@@ -115,8 +118,8 @@ peaks , _ = find_peaks(signal_auto)
 firstpeak = peaks[0]
 
 while signal_auto[firstpeak] < 0.0001:
-    firstpeak = peaks[1:]
-    firstpeak = firstpeak[0]
+    peaks = peaks[1:]
+    firstpeak = peaks[0]
 
 time = firstpeak / sampling_rate
 heart_rate = 60 / time  
@@ -124,3 +127,12 @@ heart_rate = 60 / time
 print("happens at ", firstpeak)
 print("time is ", time)
 print(f"The heart rate is {heart_rate} beats per minute.")
+
+# normalize the autocorrelation data to create a probability distribution
+autocorr_data = np.array(signal_auto)  # convert list to numpy array if it isn't already
+autocorr_data = autocorr_data / np.sum(autocorr_data)
+
+# compute entropy
+shannon_entropy = entropy(autocorr_data)
+
+print(shannon_entropy)
